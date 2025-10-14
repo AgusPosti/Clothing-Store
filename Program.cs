@@ -70,7 +70,13 @@ namespace Program
 
                 Console.Write(bordeVertical);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write(" 4. Empleados                ");
+                Console.Write(" 4. Ventas                   ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(bordeVertical);
+
+                Console.Write(bordeVertical);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(" 5. Empleados                ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(bordeVertical);
 
@@ -110,6 +116,11 @@ namespace Program
                         case 4:
                             Console.Clear();
                             //menuPrincipalOpcion4();
+                            Console.ReadKey();
+                            break;
+                        case 5:
+                            Console.Clear();
+                            //menuPrincipalOpcion5();
                             Console.ReadKey();
                             break;
                         case 0:
