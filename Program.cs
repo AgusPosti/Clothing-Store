@@ -6,14 +6,153 @@ namespace Program
     {
         static void Main(string[] args)
         {
-            menu();
+            menuPrincipal();
             // Pago en efectivo = 20% de descuento
             // Pago en cuotas = 5% de interes por cantidad de cuotas (maximo 12 cuotas)
 
+        }
 
-            static void menu()
+
+        static void menuPrincipal()
+        {
+            int opcionPrincipal;
+
+            do
             {
-                int opcion;
+                char esquinSupIzq = '╔';
+                char esquinSupDer = '╗';
+                char esquinInfIzq = '╚';
+                char esquinInfDer = '╝';
+                char bordeHorizontal = '═';
+                char bordeVertical = '║';
+                char bordeHoriCenIzq = '╠';
+                char bordeHoriCenDer = '╣';
+
+                Console.Clear();
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write(esquinSupIzq);
+                for (int i = 0; i < 29; i++) Console.Write(bordeHorizontal);
+                Console.WriteLine(esquinSupDer);
+
+                Console.Write(bordeVertical);
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write("  MENÚ DE LA TIENDA DE ROPA  ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(bordeVertical);
+
+                Console.Write(bordeHoriCenIzq);
+                for (int i = 0; i < 29; i++) Console.Write(bordeHorizontal);
+                Console.WriteLine(bordeHoriCenDer);
+
+                Console.Write(bordeVertical);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(" 1. Emisión de presupuestos  ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(bordeVertical);
+
+                Console.Write(bordeVertical);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(" 2. Productos                ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(bordeVertical);
+
+                Console.Write(bordeVertical);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(" 3. Clientes                 ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(bordeVertical);
+
+                Console.Write(bordeVertical);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(" 4. Empleados                ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(bordeVertical);
+
+                Console.Write(bordeVertical);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(" 0. Salir                    ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(bordeVertical);
+
+                Console.Write(esquinInfIzq);
+                for (int i = 0; i < 29; i++) Console.Write(bordeHorizontal);
+                Console.WriteLine(esquinInfDer);
+
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write("Seleccione una opción: ");
+                string inputOpcionPrincipal = Console.ReadLine();
+
+                if (int.TryParse(inputOpcionPrincipal, out opcionPrincipal))
+                {
+                    switch (opcionPrincipal)
+                    {
+                        case 1:
+                            Console.Clear();
+                            //menuPrincipalOpcion1();
+                            Console.ReadKey();
+                            break;
+                        case 2:
+                            Console.Clear();
+                            //menuPrincipalOpcion2();
+                            Console.ReadKey();
+                            break;
+                        case 3:
+                            Console.Clear();
+                            //menuPrincipalOpcion3();
+                            Console.ReadKey();
+                            break;
+                        case 4:
+                            Console.Clear();
+                            //menuPrincipalOpcion4();
+                            Console.ReadKey();
+                            break;
+                        case 0:
+
+                            //menuPrincipalSalida();
+                            break;
+                        default:
+                            Console.WriteLine("Ingrese una opción válida.");
+                            break;
+                    }
+                }
+                else
+                    Console.WriteLine("\nOpción no encontrada. Reintente.");
+
+            } while (opcionPrincipal != 0);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*    
+        static void menuPagos()
+        {
+                int opcionPagos;
 
                 do
                 {
@@ -67,24 +206,25 @@ namespace Program
 
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.Write("Seleccione una opción: ");
-                    string inputOpcion = Console.ReadLine();
-                    if (int.TryParse(inputOpcion, out opcion))
+                    string inputOpcionPagos = Console.ReadLine();
+
+                    if (int.TryParse(inputOpcionPagos, out opcionPagos))
                     {
-                        switch (opcion)
+                        switch (opcionPagos)
                         {
                             case 1:
                                 Console.Clear();
-                                menuOpcion1();
+                                menuPagosOpcion1();
                                 Console.ReadKey();
                                 break;
                             case 2:
                                 Console.Clear();
-                                menuOpcion2();
+                                menuPagosOpcion2();
                                 Console.ReadKey();
                                 break;
                             case 0:
 
-                                menuOpcionSalida();
+                                menuPagosOpcionSalida();
                                 break;
                             default:
                                 Console.WriteLine("Ingrese una opción válida.");
@@ -94,11 +234,13 @@ namespace Program
                     else
                         Console.WriteLine("\nOpción no encontrada. Reintente.");
 
-                } while (opcion != 3);
-            }
+                } while (opcionPagos != 0);
+        }
 
-            static void menuOpcion1()
-            {
+            
+        
+        static void menuPagosOpcion1()
+        {
                 double montoCompra;
 
                 while (true) //Bucle hasta que ingresa bien el dato
@@ -125,10 +267,12 @@ namespace Program
                         Console.WriteLine("Ingrese un valor válido de dinero.\n");
                     }
                 }
-            }
+        }
 
-            static void menuOpcion2()
-            {
+
+            
+        static void menuPagosOpcion2()
+        {
 
                 while (true) // Bucle hasta que ingresa bien el dato
                 {
@@ -170,11 +314,12 @@ namespace Program
                     else
                         Console.WriteLine("Monto no válido.\n");
                 }
-            }
+        }
 
 
-            static void menuOpcionSalida()
-            {
+            
+        static void menuPrincipalSalida()
+        {
 
                 Console.WriteLine("Desea Salir Del Programa?  ('s' para confirmar salida):  ");
                 char confirmacion = Convert.ToChar(Console.ReadLine());
@@ -184,10 +329,10 @@ namespace Program
                     Console.WriteLine("\nGracias por usar el programa. ¡Hasta luego!");
                     Environment.Exit(0); // cierra programa
                 }
-            }
-
-
         }
+        */
+
+
     }
 }
 
