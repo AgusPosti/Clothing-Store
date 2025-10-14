@@ -6,6 +6,11 @@ namespace Program
     {
         static void Main(string[] args)
         {
+            string[] ropaSuperior = { "Remera", "Camisa", "Blusa", "Top", "Buzo", "Sweater", "Campera", "Chaleco" };
+            string[] ropaInferior = { "Pantalon", "Jean", "Short", "Pollera", "Calza" };
+            string[] ropaInterior = { "Corpiño", "Bombacha", "Bóxer", "Medias" };
+            string[] accesorios = { "Gorra", "Bufanda", "Guantes", "Cinturón", "Cartera" };
+
             menuPrincipal();
             // Pago en efectivo = 20% de descuento
             // Pago en cuotas = 5% de interes por cantidad de cuotas (maximo 12 cuotas)
