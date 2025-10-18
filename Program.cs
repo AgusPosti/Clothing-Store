@@ -24,8 +24,24 @@ namespace Program
             Stock = stock;
         }
 
-
     }
+
+    //Estructura guardar datos de empleados
+    struct Empleado
+    {
+        public int Codigo { get; }
+        public string NombreCompleto { get; }
+        public string Contrasena { get; }
+
+        public Empleado(int codigo, string nombreCompleto, string contrasena)
+        {
+            Codigo = codigo;
+            NombreCompleto = nombreCompleto;
+            Contrasena = contrasena;
+        }
+    }
+
+
 
     class Program
     {
@@ -34,11 +50,14 @@ namespace Program
         static int proximoCodigo = 1; //Generador automático de códigos
 
 
+        static List<Empleado> empleados = new List<Empleado>();
+        static int contadorCodigo = 1;//Generador de codigo unico
 
 
         static void Main(string[] args)
         {
 
+            empleados.Add(new Empleado(contadorCodigo++, "Administrador", "1234"));
 
 
 
@@ -155,7 +174,7 @@ namespace Program
                             break;
                         case 5:
                             Console.Clear();
-                            //menuPrincipalOpcion5();
+                            MostrarMenuEmpleados();
                             Console.ReadKey();
                             break;
                         case 0:
@@ -179,46 +198,7 @@ namespace Program
 
 
 
-        //Funcion menú productos
-        /*/static void MostrarMenuProductos()
-        {
-            int opcionProductos;
 
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("=== Menú de productos ===");
-                Console.WriteLine("1. Agregar producto");
-                Console.WriteLine("2. Lista productos");
-                Console.WriteLine("3. Buscar producto");
-                Console.WriteLine("4. Ordenar por precio");
-                Console.WriteLine("5. Ordenar por código");
-                Console.WriteLine("6. Modificar stock");
-                Console.WriteLine("0. Salir");
-                Console.Write("Elegir opción (0-5) : ");
-                string inputOpcionProductos = Console.ReadLine();
-
-                if (int.TryParse(inputOpcionProductos, out opcionProductos))
-                {
-                    switch (opcionProductos)
-                    {
-                        case 1: agregarProductos(); break;
-                        case 2: listaProductos(); Console.ReadKey(); break;
-                        case 3: buscarProductos(); Console.ReadKey(); break;
-                        case 4: ordenarPorPrecio(); Console.ReadKey(); break;
-                        case 5: ordenarPorCodigo(); Console.ReadKey(); break;
-                        case 6: modificarStock(); break;
-                        case 0: Console.WriteLine("Regresando menú principal..."); break;
-                        default: Console.WriteLine("Opción inválida"); break;
-                    }
-
-
-
-                }
-            }
-            while (opcionProductos != 0);
-        }
-        */
 
         static void MostrarMenuProductos()
         {
@@ -262,14 +242,6 @@ namespace Program
 
             } while (opcion != 0);
         }
-
-
-
-
-
-
-
-
 
 
         static void agregarProductos()
@@ -578,51 +550,183 @@ namespace Program
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-        /*static void ordenarPorPrecio()
+        //funcion para ser llamada en el menú principal
+        static void MostrarMenuEmpleados()
         {
-                Console.Clear();
-                Console.WriteLine("=== ORDENAR PRODUCTOS POR PRECIO ===\n");
-
-                if (productos.Count == 0)
+            int opcion;
+            do
+            {
+                string[] opciones = new string[]
                 {
-                    Console.WriteLine("No hay productos cargados.");
-                    Console.WriteLine("\nPresione una tecla para volver...");
+                    "1. Lista de empleados",
+                    "2. Cargar nuevo empleado",
+                    "3. Eliminar empleado",
+                    "0. Volver al menú principal",
+                };
+
+                opcion = MostrarMenu("MENÚ DE EMPLEADOS", opciones);
+
+                switch (opcion)
+                {
+                    case 1: listaEmpleados(); break;
+                    case 2: agregarEmpleado(); Console.ReadKey(); break;
+                    case 3: eliminarEmpleado(); Console.ReadKey(); break;
+                    case 0:
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("\nRegresando al menú principal...");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        break;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine("\nOpción inválida. Intente nuevamente.");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        break;
+                }
+
+            } while (opcion != 0);
+        }
+
+
+        static void listaEmpleados()
+        {
+            Console.Clear();
+            MostrarEncabezado("LISTA EMPLEADOS");
+
+            if (empleados.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("No hay empleados registrados.");
+            }
+            else
+            {
+                foreach (var e in empleados)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine($"Código: {e.Codigo} | Nombre: {e.NombreCompleto}");
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\nPresione una tecla para continuar...");
+            Console.ReadKey();
+        }
+
+
+        static void agregarEmpleado()
+        {
+            Console.Clear();
+            MostrarEncabezado("AGREGAR NUEVO EMPLEADO");
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("Ingrese nombre completo: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            string nombre = Console.ReadLine();
+            while (string.IsNullOrWhiteSpace(nombre))
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.Write("El nombre no puede estar vacío. Ingrese nuevamente: ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                nombre = Console.ReadLine();
+            }
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("Ingrese contraseña: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            string contrasena = Console.ReadLine();
+
+            empleados.Add(new Empleado(contadorCodigo++, nombre, contrasena));
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nEmpleado agregado correctamente.");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Presione una tecla para continuar...");
+            Console.ReadKey();
+        }
+
+
+
+
+        static void eliminarEmpleado()
+        {
+            Console.Clear();
+            MostrarEncabezado("ELIMINAR EMPLEADO");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("'0' para regresar.");
+
+            if (empleados.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("No hay empleados para eliminar.");
+                Console.ReadKey();
+                return;
+            }
+            else
+            {
+                foreach (var e in empleados)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine($"Código: {e.Codigo} | Nombre: {e.NombreCompleto}");
+                }
+            }
+
+            int codigo;
+
+            // Bucle para que el usuario vuelva a intentar si hay error
+            while (true)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("\nIngrese el código del empleado a eliminar ('0' para regresar): ");
+
+                // Validar entrada
+                if (!int.TryParse(Console.ReadLine(), out codigo))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Entrada no válida. Intente de nuevo.");
+                    continue; // vuelve a pedir
+                }
+
+                // Opción para regresar
+                if (codigo == 0)
+                    return;
+
+                // Buscar el índice del empleado
+                int index = empleados.FindIndex(e => e.Codigo == codigo);
+
+                if (index == -1)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Código no encontrado. Intente de nuevo.");
+                    continue; // vuelve a pedir
+                }
+
+                // Evitar eliminar al Administrador
+                if (empleados[index].NombreCompleto.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("No se puede eliminar al empleado 'Administrador'.");
                     Console.ReadKey();
                     return;
                 }
 
-                Console.Write("¿Desea ordenar de menor a mayor (1) o de mayor a menor (2)? ");
-                string opcion = Console.ReadLine();
-
-                List<Producto> ordenados;
-
-                if (opcion == "2")
-                    ordenados = productos.OrderByDescending(p => p.Precio).ToList();
-                else
-                    ordenados = productos.OrderBy(p => p.Precio).ToList();
-
-                Console.WriteLine("\nCOD  | NOMBRE           | CATEGORÍA       | TALLE | PRECIO   | STOCK");
-                Console.WriteLine("--------------------------------------------------------------------");
-                foreach (var p in ordenados)
-                {
-                    Console.WriteLine($"{p.Codigo,-4} | {p.Nombre,-15} | {p.Categoria,-15} | {p.Talle,-5} | ${p.Precio,-8} | {p.Stock}");
-                }
-
-                Console.WriteLine("\nPresione una tecla para volver...");
+                // Confirmar eliminación
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Empleado {empleados[index].NombreCompleto} eliminado correctamente.");
+                empleados.RemoveAt(index);
                 Console.ReadKey();
+                return;
+            }
         }
-        */
+
+
+
+
+
+
+
+
 
 
 
