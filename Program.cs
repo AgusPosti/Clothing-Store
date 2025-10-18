@@ -1,15 +1,48 @@
 ﻿using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Program
 {
+
+    // Estructura para guardar los datos de cada producto
+    struct Producto
+    {
+        public int Codigo;
+        public string Nombre;
+        public string Categoria;
+        public string Talle;
+        public double Precio;
+        public int Stock;
+
+        public Producto(int codigo, string nombre, string categoria, string talle, double precio, int stock)
+        {
+            Codigo = codigo;
+            Nombre = nombre;
+            Categoria = categoria;
+            Talle = talle;
+            Precio = precio;
+            Stock = stock;
+        }
+
+
+    }
+
     class Program
     {
+        //Lista para guardar productos
+        static List<Producto> productos = new List<Producto>();
+        static int proximoCodigo = 1; //Generador automático de códigos
+
+
+
+
         static void Main(string[] args)
         {
-            string[] ropaSuperior = { "Remera", "Camisa", "Blusa", "Top", "Buzo", "Sweater", "Campera", "Chaleco" };
-            string[] ropaInferior = { "Pantalon", "Jean", "Short", "Pollera", "Calza" };
-            string[] ropaInterior = { "Corpiño", "Bombacha", "Bóxer", "Medias" };
-            string[] accesorios = { "Gorra", "Bufanda", "Guantes", "Cinturón", "Cartera" };
+
+
+
+
+
 
             menuPrincipal();
             // Pago en efectivo = 20% de descuento
@@ -51,31 +84,31 @@ namespace Program
                 Console.WriteLine(bordeHoriCenDer);
 
                 Console.Write(bordeVertical);
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write(" 1. Emisión de presupuestos  ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(bordeVertical);
 
                 Console.Write(bordeVertical);
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write(" 2. Productos                ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(bordeVertical);
 
                 Console.Write(bordeVertical);
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write(" 3. Clientes                 ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(bordeVertical);
 
                 Console.Write(bordeVertical);
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write(" 4. Ventas                   ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(bordeVertical);
 
                 Console.Write(bordeVertical);
-                Console.ForegroundColor = ConsoleColor.Green;
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write(" 5. Empleados                ");
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(bordeVertical);
@@ -100,11 +133,13 @@ namespace Program
                     {
                         case 1:
                             Console.Clear();
+
                             //menuPrincipalOpcion1();
                             Console.ReadKey();
                             break;
                         case 2:
                             Console.Clear();
+                            MostrarMenuProductos();
                             //menuPrincipalOpcion2();
                             Console.ReadKey();
                             break;
@@ -128,14 +163,418 @@ namespace Program
                             //menuPrincipalSalida();
                             break;
                         default:
+                            Console.ForegroundColor = ConsoleColor.DarkRed;
                             Console.WriteLine("Ingrese una opción válida.");
+                            Console.ResetColor();
                             break;
                     }
                 }
                 else
-                    Console.WriteLine("\nOpción no encontrada. Reintente.");
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("\nOpción no encontrada. Reintente.");
+                Console.ResetColor();
 
             } while (opcionPrincipal != 0);
+        }
+
+
+
+        //Funcion menú productos
+        /*/static void MostrarMenuProductos()
+        {
+            int opcionProductos;
+
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("=== Menú de productos ===");
+                Console.WriteLine("1. Agregar producto");
+                Console.WriteLine("2. Lista productos");
+                Console.WriteLine("3. Buscar producto");
+                Console.WriteLine("4. Ordenar por precio");
+                Console.WriteLine("5. Ordenar por código");
+                Console.WriteLine("6. Modificar stock");
+                Console.WriteLine("0. Salir");
+                Console.Write("Elegir opción (0-5) : ");
+                string inputOpcionProductos = Console.ReadLine();
+
+                if (int.TryParse(inputOpcionProductos, out opcionProductos))
+                {
+                    switch (opcionProductos)
+                    {
+                        case 1: agregarProductos(); break;
+                        case 2: listaProductos(); Console.ReadKey(); break;
+                        case 3: buscarProductos(); Console.ReadKey(); break;
+                        case 4: ordenarPorPrecio(); Console.ReadKey(); break;
+                        case 5: ordenarPorCodigo(); Console.ReadKey(); break;
+                        case 6: modificarStock(); break;
+                        case 0: Console.WriteLine("Regresando menú principal..."); break;
+                        default: Console.WriteLine("Opción inválida"); break;
+                    }
+
+
+
+                }
+            }
+            while (opcionProductos != 0);
+        }
+        */
+
+        static void MostrarMenuProductos()
+        {
+            int opcion;
+            do
+            {
+                string[] opciones = new string[]
+                {
+                    "1. Agregar producto",
+                    "2. Lista de productos",
+                    "3. Buscar producto",
+                    "4. Ordenar por precio",
+                    "5. Ordenar por código",
+                    "6. Modificar stock",
+                    "0. Volver al menú principal"
+                };
+
+                opcion = MostrarMenu("MENÚ DE PRODUCTOS", opciones);
+
+                switch (opcion)
+                {
+                    case 1: agregarProductos(); break;
+                    case 2: listaProductos(); Console.ReadKey(); break;
+                    case 3: buscarProductos(); Console.ReadKey(); break;
+                    case 4: ordenarPorPrecio(); Console.ReadKey(); break;
+                    case 5: ordenarPorCodigo(); Console.ReadKey(); break;
+                    case 6: modificarStock(); Console.ReadKey(); break;
+                    case 0:
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("\nRegresando al menú principal...");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        break;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\nOpción inválida. Intente nuevamente.");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        break;
+                }
+
+            } while (opcion != 0);
+        }
+
+
+
+
+
+
+
+
+
+
+        static void agregarProductos()
+        {
+
+            Console.Clear();
+            MostrarEncabezado("AGREGAR PRODUCTO");
+
+            Producto nuevo = new Producto();
+            nuevo.Codigo = proximoCodigo++;
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Ingresar '0' para regresar.");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("\nNombre(no vacío): ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            string nombre = Console.ReadLine();
+
+            if (nombre == "0") return;//para volver en caso de equivocarse de opcion
+
+            // Validar que no esté vacío
+            while (string.IsNullOrWhiteSpace(nombre))
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.Write("Nombre no puede estar vacío. Ingreselo de nuevo: ");
+                Console.ResetColor();
+                nombre = Console.ReadLine();
+                if (nombre == "0") return;
+            }
+
+            nuevo.Nombre = nombre;
+
+            //arreglo de categorias
+            string[] categoriasValidas = { "Parte Superior", "Parte Inferior", "Parte Interior" };
+            string categoria;
+
+            do
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("Categoría (Parte Superior / Parte Inferior / Parte Interior): ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                categoria = Console.ReadLine();
+
+                if (categoria == "0") return;
+
+                if (!categoriasValidas.Contains(categoria, StringComparer.OrdinalIgnoreCase))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Categoria inválida. Tiene que ser exactamente una de las que se piden.\n");
+                    Console.ResetColor();
+                    categoria = null; //reinicia el bucle
+                }
+            } while (string.IsNullOrWhiteSpace(categoria));
+
+            //guarda categoria en formato estandar
+            nuevo.Categoria = categoriasValidas.First(c => c.Equals(categoria, StringComparison.OrdinalIgnoreCase));
+
+            //arreglo talles
+            string[] tallesValidos = { "XS", "S", "M", "L", "XL" };
+            string talle;
+
+            do
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("Talle('XS', 'S', 'M', 'L', 'XL'): ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                talle = Console.ReadLine()?.ToUpper();
+
+                if (talle == "0") { return; }
+
+                if (!tallesValidos.Contains(talle))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Talle inválido. Ingrese uno igual al que se pide.\n");
+                    talle = null;
+                }
+            } while (string.IsNullOrWhiteSpace(talle));
+
+            nuevo.Talle = talle;
+
+
+            double precio;
+            do
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("Precio(número positivo): ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                string inputPrecio = Console.ReadLine();
+
+                if (!double.TryParse(inputPrecio, out precio) || precio <= 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Precio inválido. Debe ser un número positivo.\n");
+                }
+            } while (precio <= 0);
+
+            nuevo.Precio = precio;
+
+
+            //validar stock
+            int stock;
+            do
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("Stock inicial(0 en adelante): ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                string inputStock = Console.ReadLine();
+
+                if (!int.TryParse(inputStock, out stock) || stock < 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Stock inválido. Ingrese un numero entero mayor o igual a 0.\n");
+                }
+            } while (stock < 0);
+
+            nuevo.Stock = stock;
+
+            productos.Add(nuevo);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Producto agregado correctamente.");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"\nCódigo asignado: {nuevo.Codigo}");
+            Console.WriteLine($"{nuevo.Nombre} - Categoría: {nuevo.Categoria}, Talle {nuevo.Talle} - ${nuevo.Precio} - Stock: {nuevo.Stock}");
+
+            Console.WriteLine("\nPresione una tecla para continuar...");
+            Console.ReadKey();
+        }
+
+        static void listaProductos()
+        {
+            Console.Clear();
+            MostrarEncabezado("LISTA DE PRODUCTOS");
+
+            if (productos.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("No hay productos cargados.");
+                return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("COD  | NOMBRE           | CATEGORÍA       | TALLE | PRECIO   | STOCK");
+            Console.WriteLine("--------------------------------------------------------------------");
+            foreach (var p in productos)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine($"{p.Codigo,-4} | {p.Nombre,-15} | {p.Categoria,-15} | {p.Talle,-5} | ${p.Precio,-8} | {p.Stock}");
+            }
+        }
+
+        static void buscarProductos()
+        {
+            Console.Clear();
+            MostrarEncabezado("BUSCAR PRODUCTO POR NOMBRE");
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("Buscar: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            string busqueda = Console.ReadLine().ToLower();
+
+            var encontrados = productos.FindAll(p => p.Nombre.ToLower().Contains(busqueda));
+
+            if (encontrados.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("No se encontraron productos con ese nombre.");
+                return;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("\nResultados:");
+            foreach (var p in encontrados)
+            {
+                Console.WriteLine($"\n[{p.Codigo}] {p.Nombre} - {p.Categoria} - Talle {p.Talle} - ${p.Precio} - Stock: {p.Stock}");
+            }
+        }
+
+        static void modificarStock()
+        {
+            Console.Clear();
+            MostrarEncabezado("MODIFICAR STOCK");
+
+            int codigo;
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("Ingrese el código del producto: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            string inputCodigo = Console.ReadLine();
+            if (int.TryParse(inputCodigo, out codigo))
+            {
+                var producto = productos.Find(p => p.Codigo == codigo);
+                if (producto.Codigo == 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Producto no encontrado.");
+                    return;
+                }
+
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine($"Producto: {producto.Nombre} - Stock actual: {producto.Stock}");
+                Console.Write("Nuevo stock: ");
+                producto.Stock = int.Parse(Console.ReadLine());
+
+                // Actualizamos el producto en la lista
+                int index = productos.FindIndex(p => p.Codigo == codigo);
+                productos[index] = producto;
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Ingrese un número válido.");
+            }
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nStock actualizado correctamente.");
+        }
+
+        //funcion para ordenar por precio productos, haciendo bubble sort
+        static void ordenarPorPrecio()
+        {
+            Console.Clear();
+            MostrarEncabezado("ORDENAR POR PRECIO DE '-' A '+'");
+
+            if (productos.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("No hay productos cargados.");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("\nPresione una tecla para volver...");
+                Console.ReadKey();
+                return;
+            }
+
+            // Copia de la lista original
+            var listaOrdenada = new List<Producto>(productos);
+
+            for (int i = 0; i < listaOrdenada.Count - 1; i++)
+            {
+                for (int j = 0; j < listaOrdenada.Count - i - 1; j++)
+                {
+                    if (listaOrdenada[j].Precio > listaOrdenada[j + 1].Precio)
+                    {
+                        var temp = listaOrdenada[j];
+                        listaOrdenada[j] = listaOrdenada[j + 1];
+                        listaOrdenada[j + 1] = temp;
+                    }
+                }
+            }
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("COD  | NOMBRE           | CATEGORÍA       | TALLE | PRECIO   | STOCK");
+            Console.WriteLine("--------------------------------------------------------------------");
+            foreach (var p in listaOrdenada)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine($"{p.Codigo,-4} | {p.Nombre,-15} | {p.Categoria,-15} | {p.Talle,-5} | ${p.Precio,-8} | {p.Stock}");
+            }
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\nPresione una tecla para volver...");
+            Console.ReadKey();
+        }
+
+        //funcion para ordenar por codigo productos, haciendo bubble sort
+        static void ordenarPorCodigo()
+        {
+            Console.Clear();
+            MostrarEncabezado("ORDENAR POR CÓDIGO");
+
+            if (productos.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("No hay productos cargados.");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("\nPresione una tecla para volver...");
+                Console.ReadKey();
+                return;
+            }
+
+            // Copia de la lista original para no modificarla
+            var listaOrdenada = new List<Producto>(productos);
+
+            // Bubble Sort ascendente por Código
+            for (int i = 0; i < listaOrdenada.Count - 1; i++)
+            {
+                for (int j = 0; j < listaOrdenada.Count - i - 1; j++)
+                {
+                    if (listaOrdenada[j].Codigo > listaOrdenada[j + 1].Codigo)
+                    {
+                        var temp = listaOrdenada[j];
+                        listaOrdenada[j] = listaOrdenada[j + 1];
+                        listaOrdenada[j + 1] = temp;
+                    }
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("COD  | NOMBRE           | CATEGORÍA       | TALLE | PRECIO   | STOCK");
+            Console.WriteLine("--------------------------------------------------------------------");
+            foreach (var p in listaOrdenada)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine($"{p.Codigo,-4} | {p.Nombre,-15} | {p.Categoria,-15} | {p.Talle,-5} | ${p.Precio,-8} | {p.Stock}");
+            }
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\nPresione una tecla para volver...");
+            Console.ReadKey();
         }
 
 
@@ -150,10 +589,40 @@ namespace Program
 
 
 
+        /*static void ordenarPorPrecio()
+        {
+                Console.Clear();
+                Console.WriteLine("=== ORDENAR PRODUCTOS POR PRECIO ===\n");
 
+                if (productos.Count == 0)
+                {
+                    Console.WriteLine("No hay productos cargados.");
+                    Console.WriteLine("\nPresione una tecla para volver...");
+                    Console.ReadKey();
+                    return;
+                }
 
+                Console.Write("¿Desea ordenar de menor a mayor (1) o de mayor a menor (2)? ");
+                string opcion = Console.ReadLine();
 
+                List<Producto> ordenados;
 
+                if (opcion == "2")
+                    ordenados = productos.OrderByDescending(p => p.Precio).ToList();
+                else
+                    ordenados = productos.OrderBy(p => p.Precio).ToList();
+
+                Console.WriteLine("\nCOD  | NOMBRE           | CATEGORÍA       | TALLE | PRECIO   | STOCK");
+                Console.WriteLine("--------------------------------------------------------------------");
+                foreach (var p in ordenados)
+                {
+                    Console.WriteLine($"{p.Codigo,-4} | {p.Nombre,-15} | {p.Categoria,-15} | {p.Talle,-5} | ${p.Precio,-8} | {p.Stock}");
+                }
+
+                Console.WriteLine("\nPresione una tecla para volver...");
+                Console.ReadKey();
+        }
+        */
 
 
 
@@ -349,7 +818,121 @@ namespace Program
         */
 
 
+
+
+
+
+
+
+
+        // Función genérica para mostrar un menú con el mismo estilo visual
+        static int MostrarMenu(string titulo, string[] opciones)
+        {
+            Console.Clear();
+
+            char esquinSupIzq = '╔';
+            char esquinSupDer = '╗';
+            char esquinInfIzq = '╚';
+            char esquinInfDer = '╝';
+            char bordeHorizontal = '═';
+            char bordeVertical = '║';
+            char bordeHoriCenIzq = '╠';
+            char bordeHoriCenDer = '╣';
+
+            int ancho = opciones.Max(o => o.Length) + 6; // Ajusta el ancho automáticamente según el texto
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write(esquinSupIzq);
+            for (int i = 0; i < ancho; i++) Console.Write(bordeHorizontal);
+            Console.WriteLine(esquinSupDer);
+
+            // Título centrado
+            Console.Write(bordeVertical);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            string tituloCentrado = titulo.PadLeft((ancho + titulo.Length) / 2).PadRight(ancho);
+            Console.Write($"{tituloCentrado}");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(bordeVertical);
+
+            Console.Write(bordeHoriCenIzq);
+            for (int i = 0; i < ancho; i++) Console.Write(bordeHorizontal);
+            Console.WriteLine(bordeHoriCenDer);
+
+            // Mostrar opciones
+            for (int i = 0; i < opciones.Length; i++)
+            {
+                Console.Write(bordeVertical);
+
+                if (opciones[i].Trim().StartsWith("0"))
+                    Console.ForegroundColor = ConsoleColor.Red;
+                else
+                    Console.ForegroundColor = ConsoleColor.Blue;
+
+                Console.Write($" {opciones[i].PadRight(ancho - 1)}");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine(bordeVertical);
+            }
+
+            Console.Write(esquinInfIzq);
+            for (int i = 0; i < ancho; i++) Console.Write(bordeHorizontal);
+            Console.WriteLine(esquinInfDer);
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("Seleccione una opción: ");
+
+            string input = Console.ReadLine();
+            int.TryParse(input, out int opcion);
+            return opcion;
+        }
+
+
+        // Función para mostrar un encabezado con el mismo estilo visual
+        static void MostrarEncabezado(string titulo)
+        {
+            Console.Clear();
+
+            char esquinSupIzq = '╔';
+            char esquinSupDer = '╗';
+            char esquinInfIzq = '╚';
+            char esquinInfDer = '╝';
+            char bordeHorizontal = '═';
+            char bordeVertical = '║';
+
+            int ancho = titulo.Length + 10; // margen lateral
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write(esquinSupIzq);
+            for (int i = 0; i < ancho; i++) Console.Write(bordeHorizontal);
+            Console.WriteLine(esquinSupDer);
+
+            Console.Write(bordeVertical);
+            string tituloCentrado = titulo.PadLeft((ancho + titulo.Length) / 2).PadRight(ancho);
+            Console.Write(tituloCentrado);
+            Console.WriteLine(bordeVertical);
+
+            Console.Write(esquinInfIzq);
+            for (int i = 0; i < ancho; i++) Console.Write(bordeHorizontal);
+            Console.WriteLine(esquinInfDer);
+            Console.ResetColor();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
-
 
