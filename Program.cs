@@ -42,6 +42,23 @@ namespace Program
     }
 
 
+    //Estructura guardar datos clientes
+    struct Cliente
+    {
+        public int Codigo;
+        public string Nombre;
+        public string Email;
+        public string Telefono;
+
+        public Cliente(int codigo, string nombre, string email, string telefono)
+        {
+            Codigo = codigo;
+            Nombre = nombre;
+            Email = email;
+            Telefono = telefono;
+        }
+    }
+
 
     class Program
     {
@@ -49,9 +66,13 @@ namespace Program
         static List<Producto> productos = new List<Producto>();
         static int proximoCodigo = 1; //Generador automático de códigos
 
-
+        //Lista para guardar empleados
         static List<Empleado> empleados = new List<Empleado>();
         static int contadorCodigo = 1;//Generador de codigo unico
+
+        //Lista para guardar clientes
+        static List<Cliente> clientes = new List<Cliente>();
+        static int contadorCodigoCliente = 1;
 
 
         static void Main(string[] args)
@@ -159,12 +180,11 @@ namespace Program
                         case 2:
                             Console.Clear();
                             MostrarMenuProductos();
-                            //menuPrincipalOpcion2();
                             Console.ReadKey();
                             break;
                         case 3:
                             Console.Clear();
-                            //menuPrincipalOpcion3();
+                            MostrarMenuClientes();
                             Console.ReadKey();
                             break;
                         case 4:
@@ -551,6 +571,439 @@ namespace Program
 
 
         //funcion para ser llamada en el menú principal
+        static void MostrarMenuClientes()
+        {
+            // Pre-cargar "Consumidor Final" si no existe
+            if (clientes.FindIndex(c => c.Nombre.Equals("Consumidor Final", StringComparison.OrdinalIgnoreCase)) == -1)
+            {
+                clientes.Add(new Cliente(contadorCodigoCliente++, "Consumidor Final", "", ""));
+            }
+
+            int opcion;
+            do
+            {
+                string[] opciones = new string[]
+                {
+                    "1. Lista de clientes",
+                    "2. Cargar nuevo cliente",
+                    "3. Modificar datos cliente",
+                    "4. Eliminar cliente",
+                    "0. Volver al menú principal",
+                };
+
+                opcion = MostrarMenu("MENÚ DE CLIENTES", opciones);
+
+                switch (opcion)
+                {
+                    case 1: listaCliente(); break;
+                    case 2: agregarCliente(); Console.ReadKey(); break;
+                    case 3: modificarCliente(); Console.ReadKey(); break;
+                    case 4: eliminarCliente(); Console.ReadKey(); break;
+                    case 0:
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.WriteLine("\nRegresando al menú principal...");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        return;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine("\nOpción inválida. Intente nuevamente.");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        break;
+                }
+
+            } while (opcion != 0);
+        }
+
+
+        static void listaCliente()
+        {
+            Console.Clear();
+            MostrarEncabezado("LISTA CLIENTES");
+
+            if (clientes.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("No hay clientes registrados.");
+            }
+            else
+            {
+                foreach (var c in clientes)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine($"Código: [{c.Codigo}] | Nombre: {c.Nombre} | Email: {c.Email} | Tel: {c.Telefono}");
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\nPresione una tecla para continuar...");
+            Console.ReadKey();
+        }
+
+
+        static void agregarCliente()
+        {
+            Console.Clear();
+            MostrarEncabezado("AGREGAR CLIENTE");
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("Ingrese nombre completo: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            string nombre = Console.ReadLine();
+
+            while (string.IsNullOrWhiteSpace(nombre))
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.Write("El nombre no puede estar vacío. Ingrese nuevamente: ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                nombre = Console.ReadLine();
+            }
+
+            string email;
+            while (true)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("Ingrese email (opcional): ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                email = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    email = ""; // lo dejamos vacío
+                    break;
+                }
+
+                //valida que contenga un dominio valido
+                if (!email.Contains("@") || !email.Contains(".com"))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Email inválido. Si lo ingresa, debe contener '@' y '.com'. Intente de nuevo.");
+                    continue;
+                }
+
+                break; // email válido
+            }
+
+            string telefono;
+            while (true)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("Ingrese teléfono(opcional): ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                telefono = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(telefono))
+                {
+                    telefono = "";
+                    break;
+                }
+
+                // Validar que todos los caracteres sean números
+                bool esNumerico = true;
+                foreach (char c in telefono)
+                {
+                    if (!char.IsDigit(c))
+                    {
+                        esNumerico = false;
+                        break;
+                    }
+                }
+
+                if (!esNumerico)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("El teléfono debe contener solo números. Intente de nuevo.");
+                    continue;
+                }
+
+                break;
+            }
+
+
+            clientes.Add(new Cliente(contadorCodigoCliente++, nombre, email, telefono));
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nCliente agregado correctamente.");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Presione una tecla para continuar...");
+            Console.ReadKey();
+        }
+
+
+        static void modificarCliente()
+        {
+            Console.Clear();
+            MostrarEncabezado("MODIFICAR CLIENTE");
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("Ingrese el código o nombre del cliente: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            string input = Console.ReadLine();
+            Console.ResetColor();
+
+            int index = -1;
+
+            // Buscar por código o por nombre (ignorando mayúsculas/minúsculas)
+            if (int.TryParse(input, out int codigoBuscado))
+            {
+                index = clientes.FindIndex(c => c.Codigo == codigoBuscado);
+            }
+            else
+            {
+                index = clientes.FindIndex(c => c.Nombre.Equals(input, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (index == -1)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("\nCliente no encontrado.");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("Presione una tecla para continuar...");
+                Console.ReadKey();
+                return;
+            }
+
+            // Obtener copia del cliente actual
+            var clienteActual = clientes[index];
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\nCliente encontrado: [{clienteActual.Codigo}] - {clienteActual.Nombre}");
+            Console.ResetColor();
+
+            // Mostrar opciones de modificación
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("\n¿Qué desea modificar?");
+            Console.WriteLine("1. Email");
+            Console.WriteLine("2. Teléfono");
+            Console.WriteLine("3. Nombre");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("0. Cancelar");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("Seleccione una opción: ");
+            string opcion = Console.ReadLine();
+            Console.ResetColor();
+
+            // Valores que vamos a usar para reconstruir el struct (empezamos con los actuales)
+            string nuevoNombre = clienteActual.Nombre;
+            string nuevoEmail = clienteActual.Email;
+            string nuevoTelefono = clienteActual.Telefono;
+
+            switch (opcion)
+            {
+                case "1":
+                    // Email opcional pero validado
+                    while (true)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write("Ingrese nuevo email (opcional): ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        string e = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(e))
+                        {
+                            nuevoEmail = "";
+                            break;
+                        }
+
+                        if (!e.Contains("@") || !e.Contains(".com"))
+                        {
+                            Console.ForegroundColor = ConsoleColor.DarkRed;
+                            Console.WriteLine("Email inválido. Si lo ingresa, debe contener '@' y '.com'. Intente de nuevo.");
+                            continue;
+                        }
+
+                        nuevoEmail = e;
+                        break;
+                    }
+                    break;
+
+                case "2":
+                    // Teléfono opcional pero numérico
+                    while (true)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write("Ingrese nuevo teléfono (opcional): ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        string t = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(t))
+                        {
+                            nuevoTelefono = "";
+                            break;
+                        }
+
+                        bool esNumerico = true;
+                        foreach (char c in t)
+                        {
+                            if (!char.IsDigit(c))
+                            {
+                                esNumerico = false;
+                                break;
+                            }
+                        }
+
+                        if (!esNumerico)
+                        {
+                            Console.ForegroundColor = ConsoleColor.DarkRed;
+                            Console.WriteLine("El teléfono debe contener solo números. Intente de nuevo.");
+                            continue;
+                        }
+
+                        nuevoTelefono = t;
+                        break;
+                    }
+                    break;
+
+                case "3":
+                    // Modificar nombre (no vacío)
+                    while (true)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write("Ingrese nuevo nombre completo: ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        string n = Console.ReadLine();
+                        if (string.IsNullOrWhiteSpace(n))
+                        {
+                            Console.ForegroundColor = ConsoleColor.DarkRed;
+                            Console.WriteLine("El nombre no puede estar vacío. Intente de nuevo.");
+                            continue;
+                        }
+                        nuevoNombre = n;
+                        break;
+                    }
+                    break;
+
+                case "0":
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("\nOperación cancelada.");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("Presione una tecla para continuar...");
+                    Console.ReadKey();
+                    return;
+
+                default:
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("\nOpción inválida.");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("Presione una tecla para continuar...");
+                    Console.ReadKey();
+                    return;
+            }
+
+            // Reconstruir el struct Cliente y sobrescribir en la lista
+            clientes[index] = new Cliente(clienteActual.Codigo, nuevoNombre, nuevoEmail, nuevoTelefono);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nDatos del cliente modificados correctamente.");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Presione una tecla para continuar...");
+            Console.ReadKey();
+        }
+
+
+
+
+        static void eliminarCliente()
+        {
+            Console.Clear();
+            MostrarEncabezado("ELIMINAR CLIENTE");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("'0' para regresar.");
+
+            if (clientes.Count == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("No hay clientes para eliminar.");
+                Console.ReadKey();
+                return;
+            }
+
+            foreach (var c in clientes)
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine($"Código: {c.Codigo} | Nombre: {c.Nombre} | Email: {c.Email} | Tel: {c.Telefono}");
+            }
+
+            int codigo;
+
+            while (true) // Bucle para volver a pedir si hay error
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("\nIngrese el código del cliente a eliminar: ");
+
+                if (!int.TryParse(Console.ReadLine(), out codigo))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Entrada no válida. Intente de nuevo.");
+                    continue;
+                }
+
+                if (codigo == 0)
+                    return;
+
+                int index = clientes.FindIndex(c => c.Codigo == codigo);
+
+                if (index == -1)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("Código no encontrado. Intente de nuevo.");
+                    continue;
+                }
+
+                if (clientes[index].Nombre.Equals("Consumidor Final", StringComparison.OrdinalIgnoreCase))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("No se puede eliminar al cliente 'Consumidor Final'.");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Cliente {clientes[index].Nombre} eliminado correctamente.");
+                clientes.RemoveAt(index);
+                Console.ReadKey();
+                return;
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //funcion para ser llamada en el menú principal
         static void MostrarMenuEmpleados()
         {
             int opcion;
@@ -738,188 +1191,22 @@ namespace Program
 
 
 
-        /*    
-        static void menuPagos()
-        {
-                int opcionPagos;
-
-                do
-                {
-                    char esquinSupIzq = '╔';
-                    char esquinSupDer = '╗';
-                    char esquinInfIzq = '╚';
-                    char esquinInfDer = '╝';
-                    char bordeHorizontal = '═';
-                    char bordeVertical = '║';
-                    char bordeHoriCenIzq = '╠';
-                    char bordeHoriCenDer = '╣';
-
-                    Console.Clear();
-
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write(esquinSupIzq);
-                    for (int i = 0; i < 38; i++) Console.Write(bordeHorizontal);
-                    Console.WriteLine(esquinSupDer);
-
-                    Console.Write(bordeVertical);
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write("  MENÚ DE PAGOS DE LA TIENDA DE ROPA  ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(bordeVertical);
-
-                    Console.Write(bordeHoriCenIzq);
-                    for (int i = 0; i < 38; i++) Console.Write(bordeHorizontal);
-                    Console.WriteLine(bordeHoriCenDer);
-
-                    Console.Write(bordeVertical);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write(" 1. Pago en efectivo (20% desc.)      ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(bordeVertical);
-
-                    Console.Write(bordeVertical);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write(" 2. Pago en cuotas (hasta 12 cuotas)  ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(bordeVertical);
-
-                    Console.Write(bordeVertical);
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(" 0. Salir                             ");
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(bordeVertical);
-
-                    Console.Write(esquinInfIzq);
-                    for (int i = 0; i < 38; i++) Console.Write(bordeHorizontal);
-                    Console.WriteLine(esquinInfDer);
-
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.Write("Seleccione una opción: ");
-                    string inputOpcionPagos = Console.ReadLine();
-
-                    if (int.TryParse(inputOpcionPagos, out opcionPagos))
-                    {
-                        switch (opcionPagos)
-                        {
-                            case 1:
-                                Console.Clear();
-                                menuPagosOpcion1();
-                                Console.ReadKey();
-                                break;
-                            case 2:
-                                Console.Clear();
-                                menuPagosOpcion2();
-                                Console.ReadKey();
-                                break;
-                            case 0:
-
-                                menuPagosOpcionSalida();
-                                break;
-                            default:
-                                Console.WriteLine("Ingrese una opción válida.");
-                                break;
-                        }
-                    }
-                    else
-                        Console.WriteLine("\nOpción no encontrada. Reintente.");
-
-                } while (opcionPagos != 0);
-        }
-
-            
-        
-        static void menuPagosOpcion1()
-        {
-                double montoCompra;
-
-                while (true) //Bucle hasta que ingresa bien el dato
-                {
-                    Console.Write("Ingrese monto de compra: ");
-                    string inputMontoCompra = Console.ReadLine();
-                    double porcDescuento, precioFinal, descuentoTotal;
-
-                    if (double.TryParse(inputMontoCompra, out montoCompra))
-                    {
-                        porcDescuento = 0.20;
-                        precioFinal = montoCompra * (1 - porcDescuento);
-                        descuentoTotal = montoCompra * porcDescuento;
-
-                        Console.WriteLine($"Por pago en efectivo, el cliente tendrá un {porcDescuento * 100}% de descuento.");
-                        Console.WriteLine($"El cliente ahorrará $ {descuentoTotal:F2}.");
-                        Console.WriteLine($"El cliente pagará finalmente $ {precioFinal:F2}.");
-                        Console.WriteLine("\nIngrese cualquier tecla para volver al menú principal.");
-
-                        break; //Sale del bucle por ingreso válido de dato
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ingrese un valor válido de dinero.\n");
-                    }
-                }
-        }
 
 
-            
-        static void menuPagosOpcion2()
-        {
+        /*   
+       static void menuPrincipalSalida()
+       {
 
-                while (true) // Bucle hasta que ingresa bien el dato
-                {
-                    Console.Write("Ingrese monto de compra: ");
-                    string inputMonto = Console.ReadLine();
-                    double porcInteres, precioFinal, interesTotal, cuota;
+               Console.WriteLine("Desea Salir Del Programa?  ('s' para confirmar salida):  ");
+               char confirmacion = Convert.ToChar(Console.ReadLine());
 
-                    if (double.TryParse(inputMonto, out double montoCompra))
-                    {
-                        Console.WriteLine("Ingrese cantidad de cuotas (1-12):");
-                        string inputCuotas = Console.ReadLine();
-                        int cantCuotas;
-
-                        if (int.TryParse(inputCuotas, out cantCuotas))
-                        {
-                            //validar cantidad de cuotas
-                            if (cantCuotas < 1 || cantCuotas > 12)
-                            {
-                                Console.WriteLine("Cantidad de cuotas no válida. Solo se puede elegir entre 1 y 12 cuotas. ");
-                            }
-
-                            // Calcular interés según las cuotas
-                            porcInteres = 0.05 * cantCuotas;
-                            precioFinal = montoCompra * (1 + porcInteres);
-                            interesTotal = precioFinal - montoCompra;
-                            cuota = precioFinal / cantCuotas;
-
-                            Console.WriteLine($"\nEl cliente tendrá un {(porcInteres * 100):F2}% de interés.");
-                            Console.WriteLine($"El cliente pagará $ {interesTotal:F2} de interés.");
-                            Console.WriteLine($"El cliente pagará finalmente $ {precioFinal:F2}.");
-                            Console.WriteLine($"El cliente pagará {cantCuotas} cuotas de $ {cuota:F2} cada una.");
-                            Console.WriteLine("\nIngrese cualquier tecla para volver al menú principal.");
-
-                            break; // Corta el bucle cuando se ingresa bien el dato
-                        }
-                        else
-                            Console.WriteLine("Ingrese una opción valida de cuota para continuar correctamente.\n");
-                    }
-                    else
-                        Console.WriteLine("Monto no válido.\n");
-                }
-        }
-
-
-            
-        static void menuPrincipalSalida()
-        {
-
-                Console.WriteLine("Desea Salir Del Programa?  ('s' para confirmar salida):  ");
-                char confirmacion = Convert.ToChar(Console.ReadLine());
-
-                if (confirmacion == 's' || confirmacion == 'S')
-                {
-                    Console.WriteLine("\nGracias por usar el programa. ¡Hasta luego!");
-                    Environment.Exit(0); // cierra programa
-                }
-        }
-        */
+               if (confirmacion == 's' || confirmacion == 'S')
+               {
+                   Console.WriteLine("\nGracias por usar el programa. ¡Hasta luego!");
+                   Environment.Exit(0); // cierra programa
+               }
+       }
+       */
 
 
 
